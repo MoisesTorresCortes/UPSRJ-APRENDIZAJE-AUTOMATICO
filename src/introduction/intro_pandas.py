@@ -18,7 +18,7 @@ import os
 # TODO: Crea una función "csv_registers" que reciba un CSV y devuelva la cantidad de registros (int).
 #       así como el contenido en un DataFrame en un tuple(int, DataFrame).
 # NOTE: https://pandas.pydata.org/docs/dev/reference/api/pandas.read_csv.html
-def csv_registers(file: str) -> tuple[int, pd.DataFrame]:
+def csv_registers(file: str) -> tuple[int, pd.DataFrame]: 
     """
     Lee un archivo CSV y devuelve la cantidad de registros junto con su contenido.
 
