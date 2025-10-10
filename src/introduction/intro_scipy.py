@@ -32,7 +32,7 @@ def solve_linear(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     - np.ndarray
         Solución del sistema lineal como vector columna.
     """
-    solution = None
+    solution = linalg.solve(A, b)
     return solution
 
 # Ejercicio 2
@@ -52,8 +52,8 @@ def get_matrix_properties(mat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     - tuple: (det, inv)
         Determinante y matriz inversa.
     """
-    det = None
-    inv = None
+    det = linalg.det(mat)
+    inv = linalg.inv(mat)
     return (det, inv)
 
 # Ejercicio 3
@@ -74,9 +74,9 @@ def get_statistics(arg: np.ndarray) -> tuple[float, float, float]:
     - tuple: (mean, tstd, mode)
         Media, desviación estándar y moda como flotantes.
     """
-    mean = None
-    tstd = None
-    mode = None
+    mean = np.mean(arg)
+    tstd = stats.tstd(arg)
+    mode = stats.mode(arg, keepdims=False).mode 
     return (mean, tstd, mode)
 
 # Ejercicio 4
@@ -95,7 +95,7 @@ def find_min(fun: Callable[[float], float]) -> optimize.OptimizeResult:
     - OptimizeResult
         Objeto con los resultados de la optimización.
     """
-    found_min = None
+    found_min = optimize.minimize_scalar(fun)
     return found_min
 
 # Ejercicio 5
@@ -124,7 +124,7 @@ def get_spectrum(signal: np.ndarray, sample_rate: float) -> tuple[np.ndarray, np
 # TODO: Crea una función "low_pass_filter" que aplique un filtro pasa bajas Butterworth sobre una señal con ruido. 
 # NOTE: https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html
 #       https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html
-def low_pass_filter(signal: np.ndarray, fs: float, cutoff: float = 10.0, order: int = 4) -> np.ndarray:
+def low_pass_filter(signal_data: np.ndarray, fs: float, cutoff: float = 10.0, order: int = 4) -> np.ndarray:
     """
     Aplica un filtro pasa-bajas Butterworth a una señal con ruido.
 
@@ -142,5 +142,14 @@ def low_pass_filter(signal: np.ndarray, fs: float, cutoff: float = 10.0, order: 
     - np.ndarray
         Señal filtrada.
     """
-    clean_signal = None
+    nyquist_freq = 0.5 * fs
+    
+    # Normaliza la frecuencia de corte (rango 0-1, donde 1 = Nyquist)
+    normal_cutoff = cutoff / nyquist_freq
+    
+    # Diseña el filtro Butterworth (coeficientes a y b)
+    b, a = signal.butter(N=order, Wn=normal_cutoff, btype='low', analog=False)
+    
+    # Filtro en ambas direcciones para eliminar el desfase
+    clean_signal = signal.filtfilt(b, a, signal_data)
     return clean_signal
